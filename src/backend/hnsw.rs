@@ -1,7 +1,7 @@
 #![forbid(unsafe_code)]
 
 use crate::backend::AnnBackend;
-use hnsw_rs::dist::DistL2;
+use hnsw_rs::prelude::DistL2;
 use hnsw_rs::hnsw::Hnsw;
 
 #[derive(Debug, Clone)]
@@ -25,7 +25,6 @@ impl Default for HnswParams {
     }
 }
 
-#[derive(Debug)]
 pub struct HnswBackend {
     points: Vec<Vec<f32>>,
     dim: usize,
@@ -120,9 +119,10 @@ impl AnnBackend for HnswBackend {
         let kk = k.min(n.saturating_sub(1));
 
         let query = &self.points[query_index];
-        let mut ef = self.ef_search.max(kk + 1);
 
+        let ef = self.ef_search.max(kk + 1);
         let mut ans = self.hnsw.search(query, kk + 1, ef);
+
         ans.sort_by(|a, b| a.distance.partial_cmp(&b.distance).unwrap());
 
         let mut out: Vec<(usize, f64)> = Vec::with_capacity(kk);

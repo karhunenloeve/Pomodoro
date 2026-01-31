@@ -1,6 +1,6 @@
 use std::io::Read;
 
-use tomato::backend::{HnswBackend, HnswParams};
+use tomato::backend::{AnnBackend, HnswBackend, HnswParams};
 use tomato::pipeline::{run_pipeline, DensitySpec, GraphSpec, PipelineParams};
 use tomato::stats::zscore_in_place;
 use tomato::tomato::TomatoParams;
@@ -31,21 +31,35 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut points = load_iris_points()?;
     zscore_in_place(&mut points);
 
-    let backend = tomato::backend::BruteBackend::new(points)
-        .map_err(|e| format!("brute backend init failed: {}", e))?;
+    let backend = HnswBackend::new(points, HnswParams {
+        max_nb_connection: 24,
+        ef_construction: 200,
+        ef_search: 128,
+        max_layer: 16,
+        use_parallel_insert: false,
+    })?;
 
-    let radius2 = 1.50;            // set this
-    let bandwidth2 = 0.20;         // set this
-    let k_rips = 50usize;          // set this
-    let k_kde = 50usize;           // set this
+    // Paper style pipeline: Rips + KDE + ToMATo
 
-    let k_graph = 15usize;
-    let k_density = 15usize;
+    let radius2 = 1.50;
+    let bandwidth2 = 0.20;
+
+    let k_rips = 50usize;
+    let k_kde = 50usize;
+
+    let tau = 0.15;
 
     let params = PipelineParams {
-        graph: GraphSpec::Knn { k: k_graph, symmetrize: true },
-        density: DensitySpec::KnnLog { k: k_density, eps: 1e-12 },
-        tomato: TomatoParams { tau: 0.15 },
+        graph: GraphSpec::RipsFromKnnApprox {
+            k: k_rips,
+            radius2,
+            symmetrize: true,
+        },
+        density: DensitySpec::KdeGaussianKnn {
+            k: k_kde,
+            bandwidth2,
+        },
+        tomato: TomatoParams { tau },
     };
 
     let out = run_pipeline(&backend, params)?;
