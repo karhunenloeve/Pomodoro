@@ -1,4 +1,4 @@
-# tomato
+# ToMATo
 
 ToMATo clustering in Rust with a paper faithful pipeline: Vietoris–Rips graph plus Gaussian KDE density, then persistence based mode merging. Includes an HNSW acceleration backend for large datasets.
 
