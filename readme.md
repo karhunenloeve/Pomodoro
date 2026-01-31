@@ -23,14 +23,6 @@ Two backends are available for neighbor queries
 - BruteBackend for exact kNN and exact Rips, suitable for small to medium n
 - HnswBackend for fast approximate kNN, suitable for large n
 
-Reference paper
-
-- Frédéric Chazal, Leonidas J. Guibas, Steve Y. Oudot, Primoz Skraba
-- Persistence-Based Clustering in Riemannian Manifolds
-- Journal of the ACM, 60, 6, Article 41, November 2013
-- DOI 10.1145/2535927
-- ACM page https://dl.acm.org/doi/10.1145/2535927
-
 ## Mathematical contract and guarantees
 
 Inputs to the ToMATo core
@@ -219,17 +211,12 @@ For large n, the HNSW based speed variant is the intended choice.
 If you use this crate in academic work, cite the ToMATo paper.
 
 ~~~bibtex
-@article{cgos2013pbcrm,
-  author  = {Chazal, Frederic and Guibas, Leonidas J. and Oudot, Steve Y. and Skraba, Primoz},
-  title   = {Persistence-Based Clustering in Riemannian Manifolds},
-  journal = {Journal of the ACM},
-  volume  = {60},
-  number  = {6},
-  articleno = {41},
-  numpages = {38},
-  year    = {2013},
-  month   = {11},
-  doi     = {10.1145/2535927},
-  publisher = {Association for Computing Machinery}
+@misc{martineau2025tomato_spike_sorting,
+  title         = {ToMATo: an efficient and robust clustering algorithm for high dimensional datasets. An illustration with spike sorting.},
+  author        = {Louise Martineau and Christophe Pouzat and S{\'e}gol{\`e}ne Geffray},
+  year          = {2025},
+  eprint        = {2509.17499},
+  archivePrefix = {arXiv},
+  primaryClass  = {stat.AP}
 }
 ~~~
